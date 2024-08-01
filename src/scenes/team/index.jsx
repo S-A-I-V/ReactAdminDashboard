@@ -1,76 +1,65 @@
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import axios from 'axios';
 import { tokens } from "../../theme";
-import { mockDataTeam } from "../../data/mockData";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 
-const Team = () => {
+const ShuttleStatus = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [shuttles, setShuttles] = useState([]);
+
+  useEffect(() => {
+    const fetchShuttleStatus = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/shuttles');
+        setShuttles(response.data);
+      } catch (error) {
+        console.error('Error fetching shuttle status:', error);
+      }
+    };
+
+    // Fetch data initially
+    fetchShuttleStatus();
+
+    // Set interval to fetch data every 30 seconds
+    const intervalId = setInterval(fetchShuttleStatus, 30000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
   const columns = [
-    { field: "id", headerName: "ID" },
+    { field: "shuttle_name", headerName: "Name", flex: 1 },
+    { field: "shuttle_ip", headerName: "IP Address", flex: 1 },
     {
-      field: "name",
-      headerName: "Name",
+      field: "shuttle_state",
+      headerName: "Status",
       flex: 1,
-      cellClassName: "name-column--cell",
+      renderCell: ({ value }) => (
+        <Box
+          width="60%"
+          m="0 auto"
+          p="5px"
+          display="flex"
+          justifyContent="center"
+          backgroundColor={value === 'up' ? colors.greenAccent[600] : colors.redAccent[600]}
+          borderRadius="4px"
+        >
+          <Typography color={colors.grey[100]}>{value}</Typography>
+        </Box>
+      )
     },
-    {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      headerAlign: "left",
-      align: "left",
-    },
-    {
-      field: "phone",
-      headerName: "Phone Number",
-      flex: 1,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
-    },
-    {
-      field: "accessLevel",
-      headerName: "Access Level",
-      flex: 1,
-      renderCell: ({ row: { access } }) => {
-        return (
-          <Box
-            width="60%"
-            m="0 auto"
-            p="5px"
-            display="flex"
-            justifyContent="center"
-            backgroundColor={
-              access === "admin"
-                ? colors.greenAccent[600]
-                : access === "manager"
-                ? colors.greenAccent[700]
-                : colors.greenAccent[700]
-            }
-            borderRadius="4px"
-          >
-            {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-            {access === "manager" && <SecurityOutlinedIcon />}
-            {access === "user" && <LockOpenOutlinedIcon />}
-            <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-              {access}
-            </Typography>
-          </Box>
-        );
-      },
-    },
+    { field: "state_timestamp", headerName: "Timestamp", flex: 1 },
   ];
 
   return (
     <Box m="20px">
-      <Header title="TEAM" subtitle="Managing the Team Members" />
+      <Header title="Shuttle" subtitle="Shuttle States" />
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -100,10 +89,10 @@ const Team = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={mockDataTeam} columns={columns} />
+        <DataGrid rows={shuttles} columns={columns} checkboxSelection />
       </Box>
     </Box>
   );
 };
 
-export default Team;
+export default ShuttleStatus;

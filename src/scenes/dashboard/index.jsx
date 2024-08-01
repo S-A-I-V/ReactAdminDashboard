@@ -21,7 +21,7 @@ const Dashboard = () => {
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+        <Header title="DASHBOARD" subtitle="Welcome to your Server Monitoring System" />
 
         <Box>
           <Button
@@ -55,10 +55,10 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="12,361"
-            subtitle="Emails Sent"
-            progress="0.75"
-            increase="+14%"
+            title="Servers Online"
+            subtitle="Servers Offline"
+            progress="0.7"
+            increase="x%"
             icon={
               <EmailIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -74,10 +74,10 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="431,225"
-            subtitle="Sales Obtained"
+            title="Downtime"
+            subtitle="Sales Affected"
             progress="0.50"
-            increase="+21%"
+            increase="-21%"
             icon={
               <PointOfSaleIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -93,9 +93,9 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="32,441"
-            subtitle="New Clients"
-            progress="0.30"
+            title="Users Online"
+            subtitle="Authorized Users"
+            progress="0.5"
             increase="+5%"
             icon={
               <PersonAddIcon
@@ -112,7 +112,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="1,325,134"
+            title="Logs Recorded"
             subtitle="Traffic Received"
             progress="0.80"
             increase="+43%"
